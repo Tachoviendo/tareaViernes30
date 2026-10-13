@@ -1,0 +1,40 @@
+<div>
+  <h3>Lista de usuarios ({{ this.totalUsuarios() }})</h3>
+  <button (click)="this.goToCrear()"><b>+</b></button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Nacimiento</th>
+        <th>Grupos</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of this.usuarios(); track usuario.id_usuario) {
+        <tr>
+          <td>{{ usuario.id_usuario }}</td>
+          <td>{{ usuario.username }}</td>
+          <td>{{ usuario.nombres }}</td>
+          <td>{{ usuario.apellidos }}</td>
+          <td>{{ usuario.fecha_nacimiento | date }}</td>
+          <td>{{ usuario.grupos }}</td>
+          <td>{{ usuario.activo ? 'Sí' : 'No' }}</td>
+          <td>
+            <button [routerLink]="['/', 'usuarios', usuario.id_usuario]">&#128393;</button>
+            <button (click)="this.borrarUsuario(usuario.id_usuario)">&#128465;</button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="5">No se encontraron usuarios registrados.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

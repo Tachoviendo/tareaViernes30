@@ -1,0 +1,66 @@
+#app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#app-header {
+  background-color: black;
+  color: white;
+}
+
+#app-medio {
+  display: flex;
+  flex: 1;
+}
+
+#app-footer {
+  background-color: cyan;
+}
+
+#app-sidebar {
+  width: 240px;
+  background-color: gainsboro;
+}
+
+#app-page {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+ul {
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
+li {
+  margin: 0px;
+  padding: 0px;
+}
+
+li:hover {
+  background-color: aqua;
+}
+
+li a {
+  border-bottom: 2px solid black;
+  padding: 5px;
+  display: block;
+  text-decoration: none;
+}
+
+.ruta-activa {
+  background-color: aquamarine;
+}
+
+dialog {
+  border: 2px solid red;
+  padding: 1rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}

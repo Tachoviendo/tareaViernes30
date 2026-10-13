@@ -1,0 +1,94 @@
+<div>
+  <form novalidate (submit)="submitForm($event)">
+    <div class="flex-column">
+      <label for="username">Usuario:</label>
+      <input id="username" type="text" [formField]="usuarioForm.username" />
+      <output>
+        @if (usuarioForm.username().errors().length > 0) {
+          <small class="error-text" style="color: red">
+            {{ usuarioForm.username().errors()[0].message }}
+            <!-- aquí también podría hacer un for sobre errors si quisiera -->
+          </small>
+        }
+      </output>
+    </div>
+
+    <div class="flex-column">
+      <label for="nombres">Nombres:</label>
+      <input
+        id="nombres"
+        type="text"
+        [formField]="usuarioForm.nombres"
+        [class.invalid]="this.usuarioForm.nombres().invalid()"
+      />
+      <output for="nombres">
+        @if (usuarioForm.nombres().errors().length > 0) {
+          <small class="error-text" style="color: red">
+            {{ usuarioForm.nombres().errors()[0].message }}
+          </small>
+        }
+      </output>
+    </div>
+
+    <div class="flex-column">
+      <label for="apellidos">Apellidos:</label>
+      <input
+        id="apellidos"
+        type="text"
+        [formField]="usuarioForm.apellidos"
+        [class.invalid]="this.usuarioForm.apellidos().invalid()"
+      />
+      <output for="apellidos">
+        @if (usuarioForm.apellidos().errors().length > 0) {
+          <small class="error-text" style="color: red">
+            {{ usuarioForm.apellidos().errors()[0].message }}
+          </small>
+        }
+      </output>
+    </div>
+
+    <div class="flex-column">
+      <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+      <input
+        id="fecha_nacimiento"
+        type="date"
+        [formField]="usuarioForm.fecha_nacimiento"
+        [class.invalid]="this.usuarioForm.fecha_nacimiento().invalid()"
+      />
+      <output for="fecha_nacimiento">
+        @if (usuarioForm.fecha_nacimiento().errors().length > 0) {
+          <small class="error-text" style="color: red">
+            {{ usuarioForm.fecha_nacimiento().errors()[0].message }}
+          </small>
+        }
+      </output>
+    </div>
+
+    <div class="flex-column">
+      <label>Grupos:</label>
+      @for (grupo of ['superadmin', 'admin', 'user']; track grupo) {
+        <div class="flex-row">
+          <label [for]="grupo">
+            {{ grupo }}
+          </label>
+          <input
+            type="checkbox"
+            [id]="grupo"
+            [value]="grupo"
+            [checked]="this.usuarioModel().grupos.includes(grupo)"
+            (change)="onGrupoToggle(grupo, $event)"
+          />
+        </div>
+      }
+      <output for="grupos">
+        @if (usuarioForm.grupos().errors().length > 0) {
+          <small class="error-text" style="color: red">
+            {{ usuarioForm.grupos().errors()[0].message }}
+          </small>
+        }
+      </output>
+    </div>
+
+    <button type="submit">Guardar</button>
+  </form>
+</div>

@@ -1,0 +1,12 @@
+@let usuario = this.usuario();
+@if (usuario) {
+  <app-usuario-form
+    /* como es input.required, crear usuario tendrá que pasar
+    un usuario vacío.  */
+    [usuario]="usuario"
+    (guardarUsuario)="this.onGuardarUsuario($event)"
+  >
+  </app-usuario-form>
+} @else {
+  <p>cargando usuario con id: {{ this.id_usuario() }}</p>
+}

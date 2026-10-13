@@ -1,0 +1,32 @@
+<div id="app-layout">
+  <header id="app-header">
+    <h1>Nombre Del Proyecto</h1>
+  </header>
+
+  <div id="app-medio">
+    <aside id="app-sidebar">
+      <nav>
+        <ul>
+          <li><a routerLink="/usuarios" routerLinkActive="ruta-activa">Listar usuarios</a></li>
+          <li><a routerLink="/tareas" routerLinkActive="ruta-activa">Tareas</a></li>
+          <li><a routerLink="/logout" routerLinkActive="ruta-activa">Salir</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="app-page">
+      <router-outlet />
+    </main>
+  </div>
+
+  <footer id="app-footer">
+    <p>© 2026 - UCU</p>
+  </footer>
+</div>
+
+@if (errorService.hayError()) {
+  <dialog #errordialog>
+    <p>{{ this.errorService.errors() }}</p>
+    <button (click)="this.errorService.clearErrors()">Entendido</button>
+  </dialog>
+}
