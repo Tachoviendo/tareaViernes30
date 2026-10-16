@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './pages/home/home.page';
 import { LoginPage } from './pages/auth/login/login.page';
+import { authenticatedGuard } from './guards/authenticated-guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -11,6 +12,7 @@ export const routes: Routes = [
 
   {
     path: 'tareas',
+    canActivateChild: [authenticatedGuard],
     loadChildren: () => import('./tareas.routes'),
   },
 
