@@ -1,9 +1,10 @@
 import { Component, input, linkedSignal, OnInit, output } from '@angular/core';
 import { form, FormField, maxLength, minLength, required, validate } from '@angular/forms/signals';
 import { Usuario } from '../../model/usuario';
+import { JsonPipe } from '@angular/common';
 
 @Component({
-  imports: [FormField],
+  imports: [FormField, JsonPipe],
   selector: 'app-usuario-form',
   styleUrl: './usuario.form.css',
   templateUrl: './usuario.form.html',
@@ -21,10 +22,31 @@ export class UsuarioForm {
     minLength(schemaPath.username, 2, {
       message: 'El largo mínimo para el usuario es 2 caracteres.',
     });
+
+    required(schemaPath.fecha_nacimiento, { message: 'La fecha de nacimiento es obligatoria' });
+    validate(schemaPath.fecha_nacimiento, ({ value }) => {
+      const fechaString = value();
+      if (!fechaString) return null;
+
+      const fecha = new Date(fechaString);
+      fecha.setHours(0, 0, 0, 0);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+
+      const diferencia = hoy.getTime() - fecha.getTime();
+      // Aproximación de 18 años en milisegundos
+      const esMayor = diferencia >= 18 * 365.25 * 24 * 60 * 60 * 1000;
+      if (!esMayor)
+        return {
+          kind: 'FechaIncorrecta',
+          message: 'Debe ser Mayor de 18 años',
+        };
+
+      return null;
+    });
   });
 
   public guardarUsuario = output<Usuario>();
-  // sdas;
 
   public onGrupoToggle(valor: string, event: Event): void {
     const isChecked = (event.target as HTMLInputElement).checked;
@@ -39,10 +61,10 @@ export class UsuarioForm {
 
   public submitForm(event: Event) {
     event.preventDefault();
-    // if (!this.usuarioForm().valid()) {
-    //   this.usuarioForm().markAsTouched();
-    //   return;
-    // }
+    if (!this.usuarioForm().valid()) {
+      this.usuarioForm().markAsTouched();
+      return;
+    }
     this.guardarUsuario.emit(this.usuarioForm().value());
   }
 }

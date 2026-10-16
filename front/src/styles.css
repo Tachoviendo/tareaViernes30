@@ -53,6 +53,10 @@ input.invalid:focus {
   box-shadow: #ccc inset 0px 0px 5px;
 }
 
+input + output small {
+  color: red;
+}
+
 input[type='checkbox'] {
   width: 20px;
   height: 20px;
@@ -74,10 +78,6 @@ button:hover {
   border: 2px solid black;
   border-radius: 5px;
   box-shadow: inset 0px 0px 5px #ccc;
-}
-
-output {
-  color: red;
 }
 
 dialog {

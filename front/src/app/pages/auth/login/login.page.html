@@ -1,0 +1,37 @@
+<div>
+  <form novalidate (submit)="this.submitForm($event)">
+    <div class="flex-column">
+      <label for="username">Usuario:</label>
+      <input
+        id="username"
+        type="text"
+        [formField]="this.loginForm.username"
+        [class.invalid]="this.loginForm.username().invalid() && this.loginForm.username().touched()"
+      />
+      <output>
+        @if (this.loginForm.username().touched() && this.loginForm.username().errors().length > 0) {
+          <small>
+            {{ this.loginForm.username().errors()[0].message }}
+          </small>
+        }
+      </output>
+    </div>
+    <div class="flex-column">
+      <label for="password">Contraseña:</label>
+      <input
+        id="password"
+        type="password"
+        [formField]="this.loginForm.password"
+        [class.invalid]="this.loginForm.password().invalid() && this.loginForm.password().touched()"
+      />
+      <output>
+        @if (this.loginForm.password().touched() && this.loginForm.password().errors().length > 0) {
+          <small>
+            {{ this.loginForm.password().errors()[0].message }}
+          </small>
+        }
+      </output>
+    </div>
+    <button type="submit">Guardar</button>
+  </form>
+</div>

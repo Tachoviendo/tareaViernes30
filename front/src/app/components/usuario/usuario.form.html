@@ -2,16 +2,39 @@
   <form novalidate (submit)="submitForm($event)">
     <div class="flex-column">
       <label for="username">Usuario:</label>
-      <input id="username" type="text" [formField]="usuarioForm.username" />
+      <input
+        id="username"
+        type="text"
+        [formField]="usuarioForm.username"
+        [class.invalid]="this.usuarioForm.username().invalid() && usuarioForm.username().touched()"
+      />
       <output>
-        @if (usuarioForm.username().errors().length > 0) {
-          <small class="error-text" style="color: red">
+        @if (usuarioForm.username().touched() && usuarioForm.username().errors().length > 0) {
+          <small>
             {{ usuarioForm.username().errors()[0].message }}
             <!-- aquí también podría hacer un for sobre errors si quisiera -->
           </small>
         }
       </output>
     </div>
+
+    <p>
+      Valid username: <strong>{{ this.usuarioForm.username().valid() }}</strong
+      ><br />
+      InValid username: <strong>{{ this.usuarioForm.username().invalid() }}</strong
+      ><br />
+      Touched username: <strong>{{ this.usuarioForm.username().touched() }}</strong
+      ><br />
+      Errors: <strong>{{ this.usuarioForm.username().errors() | json }}</strong>
+    </p>
+
+    <p>
+      Valid form: <strong>{{ this.usuarioForm().valid() }}</strong
+      ><br />
+      Invalid form: <strong>{{ this.usuarioForm().invalid() }}</strong
+      ><br />
+      Touched form: <strong>{{ this.usuarioForm().touched() }}</strong>
+    </p>
 
     <div class="flex-column">
       <label for="nombres">Nombres:</label>
@@ -23,7 +46,7 @@
       />
       <output for="nombres">
         @if (usuarioForm.nombres().errors().length > 0) {
-          <small class="error-text" style="color: red">
+          <small>
             {{ usuarioForm.nombres().errors()[0].message }}
           </small>
         }
@@ -40,7 +63,7 @@
       />
       <output for="apellidos">
         @if (usuarioForm.apellidos().errors().length > 0) {
-          <small class="error-text" style="color: red">
+          <small>
             {{ usuarioForm.apellidos().errors()[0].message }}
           </small>
         }
@@ -57,7 +80,7 @@
       />
       <output for="fecha_nacimiento">
         @if (usuarioForm.fecha_nacimiento().errors().length > 0) {
-          <small class="error-text" style="color: red">
+          <small>
             {{ usuarioForm.fecha_nacimiento().errors()[0].message }}
           </small>
         }
@@ -82,7 +105,7 @@
       }
       <output for="grupos">
         @if (usuarioForm.grupos().errors().length > 0) {
-          <small class="error-text" style="color: red">
+          <small>
             {{ usuarioForm.grupos().errors()[0].message }}
           </small>
         }

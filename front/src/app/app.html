@@ -1,12 +1,14 @@
 <div id="app-layout">
-  <header id="app-header">
+  <header id="app-header" class="flex-row">
     <h1>Nombre Del Proyecto</h1>
+    <h6>{{ this.authService.user()?.username || 'anonymus' }}</h6>
   </header>
 
   <div id="app-medio">
     <aside id="app-sidebar">
       <nav>
         <ul>
+          <li><a routerLink="/home" routerLinkActive="ruta-activa">Home</a></li>
           <li><a routerLink="/usuarios" routerLinkActive="ruta-activa">Listar usuarios</a></li>
           <li><a routerLink="/tareas" routerLinkActive="ruta-activa">Tareas</a></li>
           <li><a routerLink="/logout" routerLinkActive="ruta-activa">Salir</a></li>
