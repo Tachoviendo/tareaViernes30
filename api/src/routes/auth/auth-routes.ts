@@ -11,7 +11,7 @@ const authRoutes: FastifyPluginAsyncTypebox = async (
     schema: {
       tags: ["auth"],
       summary: "Login",
-      description: "login asdd",
+      description: "login",
       body: LoginSchema,
       response: {
         200: Type.Object({

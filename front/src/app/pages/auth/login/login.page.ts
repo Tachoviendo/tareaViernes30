@@ -3,6 +3,7 @@ import { form, FormField, required } from '@angular/forms/signals';
 import { Login } from '../../../model/usuario';
 import { AuthService } from '../../../services/auth.service';
 import { ErrorStore } from '../../../shared/services/error.service';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [FormField],
@@ -13,6 +14,7 @@ import { ErrorStore } from '../../../shared/services/error.service';
 export class LoginPage {
   readonly #authService = inject(AuthService);
   readonly #errorStore = inject(ErrorStore);
+  readonly #router = inject(Router);
 
   readonly #loginModel = signal<Login>({
     username: '',
@@ -35,6 +37,7 @@ export class LoginPage {
       this.#authService.setToken(respuesta.token);
       const user = await this.#authService.fetchUser();
       this.#authService.setUser(user);
+      this.#router.navigate(['/', 'home']);
     } catch (error: any) {
       this.#errorStore.addErrorFromError(error);
     }
