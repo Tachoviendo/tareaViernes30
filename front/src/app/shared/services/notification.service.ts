@@ -1,15 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Service, signal } from '@angular/core';
-
-export enum NOTIFICATION_TYPES {
-    ERROR = "error",
-    WARNING = "warning",
-    INFO = "info"
-}
-
-export type Notification = {
-    noti_type: NOTIFICATION_TYPES,
-    message: string
-}
+import { Notification, NOTIFICATION_TYPES } from '../../model/notifications';
 
 @Service()
 export class NotificationService {
@@ -27,5 +18,14 @@ export class NotificationService {
 
     public delNotification(noti_idx: number) {
         this._notifications.update(n => n.filter((_, i) => i !== noti_idx))
+    }
+
+    public addErrorFromError(error: Error): void {
+        if (error instanceof HttpErrorResponse) {
+            //Error de HttpClient
+            this.addNotification(NOTIFICATION_TYPES.ERROR, error.error.message);
+            return;
+        }
+        this.addNotification(NOTIFICATION_TYPES.ERROR, error.message);
     }
 }
