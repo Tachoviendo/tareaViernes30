@@ -42,7 +42,7 @@ class UsuariosRepository {
       ;
     `;
     const values = [pageSize, offset];
-    console.log({ query, values });
+
     const result = await myPool.query(query, values);
     return result.rows;
   }
