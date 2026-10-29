@@ -4,8 +4,7 @@ import { UsuariosService } from '../../../services/usuarios.service';
 import { UsuarioForm } from '../../../components/usuario/usuario.form';
 import { Usuario } from '../../../model/usuario';
 import { Router } from '@angular/router';
-import { NotificationService } from '../../../shared/services/notification.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   imports: [UsuarioForm],

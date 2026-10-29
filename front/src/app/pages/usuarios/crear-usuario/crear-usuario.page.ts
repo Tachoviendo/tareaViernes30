@@ -3,6 +3,7 @@ import { Usuario } from '../../../model/usuario';
 import { UsuarioForm } from '../../../components/usuario/usuario.form';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   imports: [UsuarioForm],
@@ -13,6 +14,7 @@ import { Router } from '@angular/router';
 export class CrearUsuarioPage {
   private usuariosService = inject(UsuariosService);
   private router = inject(Router);
+  private readonly notificationService = inject(NotificationService);
 
   public usuarioVacio: Usuario = {
     id_usuario: 0,
@@ -25,8 +27,12 @@ export class CrearUsuarioPage {
   };
 
   public async onGuardarUsuario(usuario: Usuario) {
-    await this.usuariosService.add(usuario);
-    this.router.navigate(['/', 'usuarios']);
+    try {
+      await this.usuariosService.add(usuario);
+      this.router.navigate(['/', 'usuarios']);
+    } catch (error: any) {
+      this.notificationService.addErrorFromError(error);
+    }
   }
 }
 

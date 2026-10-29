@@ -2,8 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { Login } from '../../../model/usuario';
 import { AuthService } from '../../../services/auth.service';
-import { NotificationService } from '../../../shared/services/notification.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   imports: [FormField],
