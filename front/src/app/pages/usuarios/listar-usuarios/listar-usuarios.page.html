@@ -1,40 +1,139 @@
 <div>
-  <h3>Lista de usuarios ({{ this.totalUsuarios() }})</h3>
-  <button (click)="this.goToCrear()"><b>+</b></button>
+  <header class="page-header">
+    <div>
+      <h3>Lista de usuarios</h3>
+      <p>{{ this.totalUsuarios() }} usuarios</p>
+    </div>
+    <button class="crear-button" type="button" (click)="this.goToCrear()">
+      <b>+</b> Crear usuario
+    </button>
+  </header>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Nombres</th>
-        <th>Apellidos</th>
-        <th>Nacimiento</th>
-        <th>Grupos</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (usuario of this.usuarios(); track usuario.id_usuario) {
+  <section class="controles" aria-label="Filtros y orden de usuarios">
+    <label class="busqueda">
+      Buscar
+      <input
+        type="search"
+        placeholder="Username o nombre completo"
+        [value]="this.busqueda()"
+        (input)="this.cambiarBusqueda($any($event.target).value)"
+      />
+    </label>
+
+    <label>
+      Estado
+      <select
+        [value]="this.activo() === undefined ? '' : this.activo()"
+        (change)="this.cambiarActivo($event)"
+      >
+        <option value="">Todos</option>
+        <option value="true">Activos</option>
+        <option value="false">Inactivos</option>
+      </select>
+    </label>
+
+    <label>
+      Ordenar por
+      <select [value]="this.sortBy()" (change)="this.cambiarOrden($event)">
+        <option value="username">Username</option>
+        <option value="apellidos">Apellidos</option>
+        <option value="fecha_nacimiento">Fecha de nacimiento</option>
+      </select>
+    </label>
+
+    <button class="direction-button" type="button" (click)="this.alternarDireccion()">
+      {{ this.sortDir() === 'asc' ? 'Ascendente ↑' : 'Descendente ↓' }}
+    </button>
+
+    <label>
+      Por página
+      <select [value]="this.limit()" (change)="this.cambiarLimite($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </label>
+  </section>
+
+  <div class="table-container">
+    <table>
+      <thead>
         <tr>
-          <td>{{ usuario.id_usuario }}</td>
-          <td>{{ usuario.username }}</td>
-          <td>{{ usuario.nombres }}</td>
-          <td>{{ usuario.apellidos }}</td>
-          <td>{{ usuario.fecha_nacimiento | date }}</td>
-          <td>{{ usuario.grupos }}</td>
-          <td>{{ usuario.activo ? 'Sí' : 'No' }}</td>
-          <td>
-            <button [routerLink]="['/', 'usuarios', usuario.id_usuario]">&#128393;</button>
-            <button (click)="this.borrarUsuario(usuario.id_usuario)">&#128465;</button>
-          </td>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Nombres</th>
+          <th>Apellidos</th>
+          <th>Nacimiento</th>
+          <th>Grupos</th>
+          <th>Activo</th>
+          <th>Acciones</th>
         </tr>
-      } @empty {
-        <tr>
-          <td colspan="5">No se encontraron usuarios registrados.</td>
-        </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @if (this.usuariosResource.isLoading()) {
+          <tr>
+            <td colspan="8" class="empty-message">Cargando usuarios...</td>
+          </tr>
+        } @else if (this.usuariosResource.error()) {
+          <tr>
+            <td colspan="8" class="empty-message">
+              No se pudieron cargar los usuarios. Intentá nuevamente.
+            </td>
+          </tr>
+        } @else {
+          @for (usuario of this.usuarios(); track usuario.id_usuario) {
+            <tr>
+              <td>{{ usuario.id_usuario }}</td>
+              <td>{{ usuario.username }}</td>
+              <td>{{ usuario.nombres }}</td>
+              <td>{{ usuario.apellidos }}</td>
+              <td>{{ usuario.fecha_nacimiento | date }}</td>
+              <td>{{ usuario.grupos }}</td>
+              <td>{{ usuario.activo ? 'Sí' : 'No' }}</td>
+              <td class="acciones">
+                <button
+                  type="button"
+                  [routerLink]="['/', 'usuarios', usuario.id_usuario]"
+                  [attr.aria-label]="'Editar ' + usuario.username"
+                >
+                  &#128393;
+                </button>
+                <button
+                  type="button"
+                  (click)="this.borrarUsuario(usuario.id_usuario)"
+                  [attr.aria-label]="'Eliminar ' + usuario.username"
+                >
+                  &#128465;
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="empty-message">No se encontraron usuarios.</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="paginacion">
+    <button
+      type="button"
+      (click)="this.paginaAnterior()"
+      [disabled]="this.usuariosResource.isLoading() || this.page() <= 1"
+    >
+      Anterior
+    </button>
+    <span>Página {{ this.page() }} de {{ this.ultimaPagina() }}</span>
+    <button
+      type="button"
+      (click)="this.paginaSiguiente()"
+      [disabled]="this.usuariosResource.isLoading() || this.page() >= this.ultimaPagina()"
+    >
+      Siguiente
+    </button>
+  </footer>
 </div>
