@@ -8,19 +8,59 @@ import type {
   ActualizarUsuarioType,
   CrearUsuarioType,
   Usuario,
+  UsuariosQuery,
 } from "../schemas/usuarios.ts";
+
+type UsuariosFiltros = Pick<UsuariosQuery, "q" | "activo">;
+
+// Solo se puede ordenar por estas columnas
+const COLUMNAS_ORDEN: Record<UsuariosQuery["sort_by"], string> = {
+  username: "username",
+  apellidos: "apellidos",
+  fecha_nacimiento: "fecha_nacimiento",
+};
+const DIRECCIONES_ORDEN: Record<UsuariosQuery["sort_dir"], string> = {
+  asc: "ASC",
+  desc: "DESC",
+};
 
 class UsuariosRepository {
   private readonly baseQuery = `
     SELECT * FROM usuarios U
   `;
 
-  async obtenerTotal() {
+  // Junta los filtros que el usuario eligió (q, activo)
+  private armarWhere(filtros: UsuariosFiltros) {
+    const condiciones: string[] = [];
+    const valores: any[] = [];
+    let idx = 1;
+
+    if (filtros.q !== undefined) {
+      condiciones.push(
+        `(username ILIKE $${idx} OR nombre_completo ILIKE $${idx})`,
+      );
+      valores.push(`%${filtros.q}%`);
+      idx++;
+    }
+    if (filtros.activo !== undefined) {
+      condiciones.push(`activo = $${idx++}`);
+      valores.push(filtros.activo);
+    }
+
+    const where =
+      condiciones.length > 0 ? `WHERE ${condiciones.join(" AND ")}` : "";
+    return { where, valores, idx };
+  }
+
+  // Cuenta cuántos usuarios hay en total con esos filtros
+  async obtenerTotal(filtros: UsuariosFiltros): Promise<number> {
+    const { where, valores } = this.armarWhere(filtros);
     const query = `
-      SELECT COUNT(*) as total FROM usuarios U
+      SELECT COUNT(*) AS total FROM usuarios U
+      ${where};
     `;
-    const result = await myPool.query(query);
-    return result.rows[0].total;
+    const result = await myPool.query(query, valores);
+    return Number(result.rows[0].total);
   }
 
   async obtenerTodos(): Promise<Usuario[]> {
@@ -32,18 +72,21 @@ class UsuariosRepository {
     return result.rows;
   }
 
-  async obtenerPagina(page: number, pageSize: number): Promise<Usuario[]> {
-    // if (!page || !pageSize) throw new BadRequestError("No se especificó page y/o limit");
-    const offset = (page - 1) * pageSize;
-    const query = `
-      ${this.baseQuery}
-      ORDER BY id_usuario ASC
-      LIMIT $1 OFFSET $2
-      ;
-    `;
-    const values = [pageSize, offset];
+  // Trae los usuarios de una sola página
+  async obtenerPagina(query: UsuariosQuery): Promise<Usuario[]> {
+    const { where, valores, idx } = this.armarWhere(query);
+    const columna = COLUMNAS_ORDEN[query.sort_by] ?? "username";
+    const direccion = DIRECCIONES_ORDEN[query.sort_dir] ?? "ASC";
+    // Cuántos usuarios saltear para llegar a la página pedida
+    const offset = (query.page - 1) * query.limit;
 
-    const result = await myPool.query(query, values);
+    const sql = `
+      ${this.baseQuery}
+      ${where}
+      ORDER BY ${columna} ${direccion}, id_usuario ${direccion}
+      LIMIT $${idx} OFFSET $${idx + 1};
+    `;
+    const result = await myPool.query(sql, [...valores, query.limit, offset]);
     return result.rows;
   }
 
