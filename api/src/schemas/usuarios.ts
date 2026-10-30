@@ -1,5 +1,9 @@
 import { Type, type Static } from "@fastify/type-provider-typebox";
-import { MetadataSchema } from "./pagination.ts";
+import {
+  MetadataSchema,
+  PaginationSchema,
+  SortDirSchema,
+} from "./pagination.ts";
 
 export const GrupoSchema = Type.Union([
   Type.Literal("user"),
@@ -74,7 +78,30 @@ export const UsuariosPaginados = Type.Object({
   meta: MetadataSchema,
 });
 
+export const UsuariosQuerySchema = Type.Object({
+  ...PaginationSchema.properties,
+  sort_by: Type.Union(
+    [
+      Type.Literal("username"),
+      Type.Literal("apellidos"),
+      Type.Literal("fecha_nacimiento"),
+    ],
+    { default: "username", description: "Campo por el cual ordenar." },
+  ),
+  sort_dir: SortDirSchema,
+  q: Type.Optional(
+    Type.String({
+      minLength: 1,
+      description: "Busca en username y nombre completo.",
+    }),
+  ),
+  activo: Type.Optional(
+    Type.Boolean({ description: "Filtra por usuarios activos o inactivos." }),
+  ),
+});
+
 export type Usuario = Static<typeof UsuarioSchema>;
+export type UsuariosQuery = Static<typeof UsuariosQuerySchema>;
 export type UsuariosPaginados = Static<typeof UsuariosPaginados>;
 export type CrearUsuarioType = Static<typeof CrearUsuarioSchema>;
 export type ActualizarUsuarioType = Static<typeof ActualizarUsuarioSchema>;
