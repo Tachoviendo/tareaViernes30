@@ -4,12 +4,79 @@ import type {
   ActualizarTareaType,
   CrearTareaType,
   Tarea,
+  TareasQuery,
 } from "../schemas/tareas.ts";
+
+type TareasFiltros = Pick<TareasQuery, "estado" | "prioridad" | "grupo">;
+
+// Solo se puede ordenar por estas columnas
+const COLUMNAS_ORDEN:Record<TareasQuery["sort_by"], string> = {
+  creada: "creada",
+  prioridad: "prioridad",
+  titulo: "titulo",
+};
+const DIRECCIONES_ORDEN: Record<TareasQuery["sort_dir"], string> = {
+  asc: "ASC",
+  desc: "DESC",
+};
 
 class TareasRepository {
   private readonly baseQuery = `
     SELECT * FROM tareas T
   `;
+
+  // Junta los filtros que el usuario eligió (estado, prioridad, grupo)
+  private armarWhere(filtros: TareasFiltros) {
+    const condiciones: string[] = [];
+    const valores: any[] = [];
+    let idx = 1;
+
+    if (filtros.estado !== undefined) {
+      condiciones.push(`estado = $${idx++}`);
+      valores.push(filtros.estado);
+    }
+    if (filtros.prioridad !== undefined) {
+      condiciones.push(`prioridad = $${idx++}`);
+      valores.push(filtros.prioridad);
+    }
+    if (filtros.grupo !== undefined) {
+      condiciones.push(`grupo = $${idx++}`);
+      valores.push(filtros.grupo);
+    }
+
+    const where =
+      condiciones.length > 0 ? `WHERE ${condiciones.join(" AND ")}` : "";
+    return { where, valores, idx };
+  }
+
+  // Cuenta cuántas tareas hay en total con esos filtros
+  async obtenerTotal(filtros: TareasFiltros): Promise<number> {
+    const { where, valores } = this.armarWhere(filtros);
+    const query = `
+      SELECT COUNT(*) AS total FROM tareas T
+      ${where};
+    `;
+    const result = await myPool.query(query, valores);
+    return Number(result.rows[0].total);
+  }
+
+  // Trae las tareas de una sola página
+  async obtenerPagina(query: TareasQuery): Promise<Tarea[]> {
+    const { where, valores, idx } = this.armarWhere(query);
+    const columna = COLUMNAS_ORDEN[query.sort_by] ?? "creada";
+    const direccion = DIRECCIONES_ORDEN[query.sort_dir] ?? "ASC";
+    // Cuántas tareas saltear para llegar a la página pedida
+    const offset = (query.page - 1) * query.limit;
+
+    const sql = `
+      ${this.baseQuery}
+      ${where}
+      ORDER BY ${columna} ${direccion}, id_tarea ${direccion}
+      LIMIT $${idx} OFFSET $${idx + 1};
+    `;
+    const result = await myPool.query(sql, [...valores, query.limit, offset]);
+    return result.rows;
+  }
 
   async obtenerTodas(): Promise<Tarea[]> {
     const query = `

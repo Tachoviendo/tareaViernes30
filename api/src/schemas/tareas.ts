@@ -1,5 +1,6 @@
 import Type, { type Static } from "typebox";
 import { GrupoSchema } from "./usuarios.ts";
+import { MetadataSchema } from "./pagination.ts";
 
 export const PrioridadSchema = Type.Union(
   [Type.Literal("0:baja"), Type.Literal("1:media"), Type.Literal("2:alta")],
@@ -25,6 +26,13 @@ export const TareaSchema = Type.Object(
 );
 
 export type Tarea = Static<typeof TareaSchema>;
+
+export const TareasPaginadas = Type.Object({
+  data: Type.Array(TareaSchema),
+  meta: MetadataSchema,
+});
+
+export type TareasPaginadas = Static<typeof TareasPaginadas>;
 
 export const CrearTareaSchema = Type.Object({
   grupo: GrupoSchema,
