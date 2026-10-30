@@ -1,1 +1,126 @@
-<p>tareas-listar works!</p>
+<section class="tareas-page">
+  <header class="page-header">
+    <div>
+      <h1>Lista de tareas</h1>
+      <p>{{ this.totalTareas() }} registros</p>
+    </div>
+  </header>
+
+  <section class="controles" aria-label="Filtros y orden de tareas">
+    <label>
+      Estado
+      <select [value]="this.estado() ?? ''" (change)="this.cambiarEstado($event)">
+        <option value="">Todos</option>
+        <option value="Abierta">Abierta</option>
+        <option value="Cerrada">Cerrada</option>
+      </select>
+    </label>
+
+    <label>
+      Prioridad
+      <select [value]="this.prioridad() ?? ''" (change)="this.cambiarPrioridad($event)">
+        <option value="">Todas</option>
+        <option value="0:baja">0 - Baja</option>
+        <option value="1:media">1 - Media</option>
+        <option value="2:alta">2 - Alta</option>
+      </select>
+    </label>
+
+    <label>
+      Grupo
+      <select [value]="this.grupo() ?? ''" (change)="this.cambiarGrupo($event)">
+        <option value="">Todos</option>
+        <option value="user">user</option>
+        <option value="admin">admin</option>
+        <option value="superadmin">superadmin</option>
+      </select>
+    </label>
+
+    <label>
+      Ordenar por
+      <select [value]="this.sortBy()" (change)="this.cambiarOrden($event)">
+        <option value="creada">Fecha de creación</option>
+        <option value="prioridad">Prioridad</option>
+        <option value="titulo">Título</option>
+      </select>
+    </label>
+
+    <button class="direction-button" type="button" (click)="this.alternarDireccion()">
+      {{ this.sortDir() === 'asc' ? 'Ascendente ↑' : 'Descendente ↓' }}
+    </button>
+
+    <label>
+      Por página
+      <select [value]="this.limit()" (change)="this.cambiarLimite($event)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </label>
+  </section>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Descripción</th>
+          <th>Grupo</th>
+          <th>Prioridad</th>
+          <th>Fecha de creación</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (this.tareasResource.isLoading()) {
+          <tr>
+            <td colspan="7" class="empty-message">Cargando tareas...</td>
+          </tr>
+        } @else if (this.tareasResource.error()) {
+          <tr>
+            <td colspan="7" class="empty-message">
+              No se pudieron cargar las tareas. Intentá nuevamente.
+            </td>
+          </tr>
+        } @else {
+          @for (tarea of this.tareas(); track tarea.id_tarea) {
+            <tr>
+              <td>{{ tarea.id_tarea }}</td>
+              <td>{{ tarea.titulo }}</td>
+              <td>{{ tarea.descripcion ?? '—' }}</td>
+              <td>{{ tarea.grupo }}</td>
+              <td>{{ tarea.prioridad }}</td>
+              <td>{{ tarea.creada | date: 'short' }}</td>
+              <td>{{ tarea.estado }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-message">No se encontraron tareas.</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="paginacion">
+    <button
+      type="button"
+      (click)="this.paginaAnterior()"
+      [disabled]="this.tareasResource.isLoading() || this.page() <= 1"
+    >
+      Anterior
+    </button>
+    <span>Página {{ this.page() }} de {{ this.ultimaPagina() }}</span>
+    <button
+      type="button"
+      (click)="this.paginaSiguiente()"
+      [disabled]="this.tareasResource.isLoading() || this.page() >= this.ultimaPagina()"
+    >
+      Siguiente
+    </button>
+  </footer>
+</section>
