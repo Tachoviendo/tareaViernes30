@@ -1,5 +1,6 @@
 import Type, { type Static } from "typebox";
 import { GrupoSchema } from "./usuarios.ts";
+import { PaginationSchema, SortDirSchema } from "./pagination.ts";
 
 export const PrioridadSchema = Type.Union(
   [Type.Literal("0:baja"), Type.Literal("1:media"), Type.Literal("2:alta")],
@@ -25,6 +26,20 @@ export const TareaSchema = Type.Object(
 );
 
 export type Tarea = Static<typeof TareaSchema>;
+
+export const TareasQuerySchema = Type.Object({
+  ...PaginationSchema.properties,
+  sort_by: Type.Union(
+    [Type.Literal("creada"), Type.Literal("prioridad"), Type.Literal("titulo")],
+    { default: "creada", description: "Campo por el cual ordenar." },
+  ),
+  sort_dir: SortDirSchema,
+  estado: Type.Optional(TareaSchema.properties.estado),
+  prioridad: Type.Optional(TareaSchema.properties.prioridad),
+  grupo: Type.Optional(GrupoSchema),
+});
+
+export type TareasQuery = Static<typeof TareasQuerySchema>;
 
 export const CrearTareaSchema = Type.Object({
   grupo: GrupoSchema,
