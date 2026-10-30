@@ -1,7 +1,139 @@
-button {
+.acciones button {
   width: 30px;
   height: 30px;
   border: 1px solid black;
   border-radius: 20px;
   margin: 3px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.page-header h3,
+.page-header p {
+  margin: 0;
+}
+
+.page-header p {
+  margin-top: 0.25rem;
+  color: #555;
+}
+
+.crear-button {
+  width: auto;
+  height: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.controles label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.controles input,
+.controles select,
+.direction-button,
+.paginacion button {
+  min-height: 2.25rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: white;
+  color: inherit;
+}
+
+.controles .busqueda input {
+  min-width: 15rem;
+}
+
+.direction-button,
+.paginacion button {
+  cursor: pointer;
+}
+
+.direction-button:hover,
+.paginacion button:not(:disabled):hover,
+.acciones button:hover {
+  background: #eee;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.65rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #f3f3f3;
+}
+
+.acciones {
+  white-space: nowrap;
+}
+
+.empty-message {
+  padding: 1.5rem;
+  color: #555;
+  text-align: center;
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.paginacion button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 640px) {
+  .controles > label,
+  .controles input,
+  .controles select,
+  .direction-button {
+    width: 100%;
+  }
+
+  .controles .busqueda input {
+    min-width: 0;
+  }
+
+  .paginacion {
+    flex-wrap: wrap;
+  }
 }
