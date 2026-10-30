@@ -23,4 +23,10 @@ export const PaginationSchema = Type.Object({
   }),
 });
 
+export const SortDirSchema = Type.Union([Type.Literal("asc"), Type.Literal("desc")], {
+  default: "asc",
+  description: "Dirección del ordenamiento.",
+});
+
 export type Pagination = Static<typeof PaginationSchema>;
+export type SortDir = Static<typeof SortDirSchema>;
