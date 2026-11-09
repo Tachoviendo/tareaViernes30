@@ -1,6 +1,5 @@
-import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
-import { RouterLink, RouterOutlet, RouterLinkActive } from '@angular/router';
-import { NotificationComponent } from './components/notification/notification.component';
+import { Component, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import {
   IonApp,
@@ -20,10 +19,8 @@ import {
 
 @Component({
   imports: [
-    RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    NotificationComponent,
     IonApp,
     IonRouterOutlet,
     IonFooter,

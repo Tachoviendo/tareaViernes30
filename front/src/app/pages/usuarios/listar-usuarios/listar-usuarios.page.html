@@ -1,40 +1,56 @@
-<div>
-  <h3>Lista de usuarios ({{ this.totalUsuarios() }})</h3>
-  <button (click)="this.goToCrear()"><b>+</b></button>
+<ion-content>
+  <div class="ion-padding-bottom">
+    <h2>
+      Usuarios <ion-badge color="primary">{{ totalUsuarios() }}</ion-badge>
+    </h2>
+  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Nombres</th>
-        <th>Apellidos</th>
-        <th>Nacimiento</th>
-        <th>Grupos</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (usuario of this.usuarios(); track usuario.id_usuario) {
-        <tr>
-          <td>{{ usuario.id_usuario }}</td>
-          <td>{{ usuario.username }}</td>
-          <td>{{ usuario.nombres }}</td>
-          <td>{{ usuario.apellidos }}</td>
-          <td>{{ usuario.fecha_nacimiento | date }}</td>
-          <td>{{ usuario.grupos }}</td>
-          <td>{{ usuario.activo ? 'Sí' : 'No' }}</td>
-          <td>
-            <button [routerLink]="['/', 'usuarios', usuario.id_usuario]">&#128393;</button>
-            <button (click)="this.borrarUsuario(usuario.id_usuario)">&#128465;</button>
-          </td>
-        </tr>
-      } @empty {
-        <tr>
-          <td colspan="5">No se encontraron usuarios registrados.</td>
-        </tr>
-      }
-    </tbody>
-  </table>
-</div>
+  @if (usuariosResource.isLoading()) {
+    <div class="ion-text-center ion-padding">
+      <ion-text color="medium">Cargando usuarios...</ion-text>
+    </div>
+  }
+
+  <ion-list lines="full">
+    @for (usuario of usuarios(); track usuario.id_usuario) {
+      <ion-item>
+        <ion-icon name="person-outline" slot="start" aria-hidden="true"></ion-icon>
+        <ion-label>
+          <h2>
+            <strong>{{ usuario.nombres }} {{ usuario.apellidos }}</strong>
+          </h2>
+          <p>&#64;{{ usuario.username }}</p>
+          <p>Nacimiento: {{ usuario.fecha_nacimiento | date: 'mediumDate' }}</p>
+          <p>Grupos: {{ usuario.grupos }}</p>
+          <p>Activo:{{ usuario.activo ? 'Sí' : 'No' }}</p>
+        </ion-label>
+
+        <ion-buttons slot="end">
+          <ion-button
+            [routerLink]="['/', 'usuarios', usuario.id_usuario]"
+            aria-label="Editar usuario"
+          >
+            <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button
+            color="danger"
+            (click)="borrarUsuario(usuario.id_usuario)"
+            aria-label="Eliminar usuario"
+          >
+            <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    } @empty {
+      <div class="ion-text-center ion-padding">
+        <ion-text color="medium">No se encontraron usuarios registrados.</ion-text>
+      </div>
+    }
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goToCrear()" aria-label="Crear nuevo usuario">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
