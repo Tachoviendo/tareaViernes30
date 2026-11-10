@@ -26,6 +26,7 @@ const usuarioRoutes: FastifyPluginAsyncTypebox = async (
         200: UsuariosPaginados,
       },
     },
+    onRequest: [fastify.authenticate],
     handler: async function (request, reply) {
       const { page, limit } = request.query;
 

@@ -15,7 +15,11 @@ import {
   IonList,
   IonLabel,
   IonMenuToggle,
+  IonItem,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { logOutOutline, homeOutline, peopleOutline, checkboxOutline } from 'ionicons/icons';
 
 @Component({
   imports: [
@@ -34,6 +38,8 @@ import {
     IonList,
     IonLabel,
     IonMenuToggle,
+    IonItem,
+    IonIcon,
   ],
   selector: 'app-root',
   styleUrl: './app.css',
@@ -42,4 +48,12 @@ import {
 export class App {
   //NADA POR AQUI TODAVÍA
   public authService = inject(AuthService);
+
+  constructor() {
+    addIcons({ logOutOutline, homeOutline, peopleOutline, checkboxOutline });
+  }
+
+  public logout(): void {
+    this.authService.doLogout();
+  }
 }

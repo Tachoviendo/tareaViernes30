@@ -49,7 +49,7 @@ import {
     IonFabButton,
   ],
 })
-export class ListarUsuariosPage implements OnInit {
+export class ListarUsuariosPage {
   private router = inject(Router);
   private usuarioService = inject(UsuariosService); //Inyección de dependencias.
 
@@ -71,7 +71,9 @@ export class ListarUsuariosPage implements OnInit {
     addIcons({ addOutline, createOutline, trashOutline, personOutline });
   }
 
-  public async ngOnInit(): Promise<void> {}
+  public async ionViewWillEnter(): Promise<void> {
+    this.usuariosResource.reload();
+  }
 
   public goToCrear() {
     this.router.navigate(['/', 'usuarios', 'create']);
