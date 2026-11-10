@@ -1,10 +1,31 @@
-import { Component, input, linkedSignal, OnInit, output } from '@angular/core';
-import { form, FormField, maxLength, minLength, required, validate } from '@angular/forms/signals';
+import { Component, input, linkedSignal, output } from '@angular/core';
+import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import { Usuario } from '../../model/usuario';
-import { JsonPipe } from '@angular/common';
+import {
+  IonItem,
+  IonNote,
+  IonLabel,
+  IonCheckbox,
+  IonButton,
+  IonInput,
+  IonCol,
+  IonRow,
+  IonGrid,
+} from '@ionic/angular';
 
 @Component({
-  imports: [FormField, JsonPipe],
+  imports: [
+    FormField,
+    IonItem,
+    IonNote,
+    IonLabel,
+    IonCheckbox,
+    IonButton,
+    IonInput,
+    IonCol,
+    IonRow,
+    IonGrid,
+  ],
   selector: 'app-usuario-form',
   styleUrl: './usuario.form.css',
   templateUrl: './usuario.form.html',
@@ -22,6 +43,9 @@ export class UsuarioForm {
     minLength(schemaPath.username, 2, {
       message: 'El largo mínimo para el usuario es 2 caracteres.',
     });
+
+    required(schemaPath.nombres, { message: 'El nombre es obligatorio' });
+    required(schemaPath.apellidos, { message: 'El apellido es obligatorio' });
 
     required(schemaPath.fecha_nacimiento, { message: 'La fecha de nacimiento es obligatoria' });
     validate(schemaPath.fecha_nacimiento, ({ value }) => {
