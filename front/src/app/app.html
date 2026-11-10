@@ -20,6 +20,13 @@
           </ion-menu-toggle>
 
           <ion-menu-toggle>
+            <ion-item [routerLink]="['/foto']" routerLinkActive="menu-activo">
+              <ion-icon name="image-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-label>Foto</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle>
             <ion-item [routerLink]="['/usuarios']" routerLinkActive="menu-activo">
               <ion-icon name="people-outline" slot="start" aria-hidden="true"></ion-icon>
               <ion-label>Usuarios</ion-label>

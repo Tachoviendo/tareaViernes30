@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { cloudUploadOutline, imageOutline } from 'ionicons/icons';
+import { Camera } from '@capacitor/camera';
 import {
   IonGrid,
   IonRow,

@@ -1,0 +1,54 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <ion-button expand="block" (click)="takePhoto()">
+        <ion-icon name="image-outline" slot="start"></ion-icon>
+        Tomar FOTO
+      </ion-button>
+      @if (this.previewUrl()) {
+        <ion-card>
+          <ion-card-content>
+            <p><strong>Archivo:</strong> {{ selectedFileName() }}</p>
+
+            @if (previewUrl()) {
+              <div style="margin-top: 15px; text-align: center">
+                <img
+                  [src]="previewUrl()"
+                  alt="Vista previa"
+                  style="
+                    max-width: 100%;
+                    max-height: 250px;
+                    border-radius: 8px;
+                    object-fit: contain;
+                  "
+                />
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      }
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      @if (fileToUpload()) {
+        <ion-button
+          expand="block"
+          color="success"
+          [disabled]="isUploading()"
+          (click)="uploadImage()"
+          style="margin-top: 20px"
+        >
+          @if (isUploading()) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+            Subiendo...
+          } @else {
+            <ion-icon name="cloud-upload-outline" slot="start"></ion-icon>
+            Subir al servidor
+          }
+        </ion-button>
+      }
+    </ion-col>
+  </ion-row>
+</ion-grid>

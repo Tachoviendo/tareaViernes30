@@ -19,7 +19,13 @@ import {
   IonIcon,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { logOutOutline, homeOutline, peopleOutline, checkboxOutline } from 'ionicons/icons';
+import {
+  logOutOutline,
+  homeOutline,
+  peopleOutline,
+  checkboxOutline,
+  imageOutline,
+} from 'ionicons/icons';
 
 @Component({
   imports: [
@@ -50,7 +56,7 @@ export class App {
   public authService = inject(AuthService);
 
   constructor() {
-    addIcons({ logOutOutline, homeOutline, peopleOutline, checkboxOutline });
+    addIcons({ logOutOutline, imageOutline, homeOutline, peopleOutline, checkboxOutline });
   }
 
   public logout(): void {
