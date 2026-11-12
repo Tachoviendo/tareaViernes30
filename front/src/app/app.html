@@ -68,6 +68,14 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
+      @for (noti of this.notificationService.notifications(); track noti.message) {
+        <ion-toast
+          [isOpen]="true"
+          [message]="noti.message"
+          [color]="noti.noti_type"
+          [duration]="2000"
+        ></ion-toast>
+      }
       <ion-router-outlet></ion-router-outlet>
     </ion-content>
     <ion-footer>

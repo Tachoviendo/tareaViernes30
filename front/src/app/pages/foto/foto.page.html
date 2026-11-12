@@ -1,28 +1,20 @@
 <ion-grid>
-  <ion-row>
-    <ion-col>
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="12" size-md="6" size-lg="4">
       <ion-button expand="block" (click)="takePhoto()">
         <ion-icon name="image-outline" slot="start"></ion-icon>
-        Tomar FOTO
+        TOMAR
       </ion-button>
-      @if (this.previewUrl()) {
+      <!-- Mostrar si hay un archivo seleccionado -->
+      @if (selectedFileName()) {
         <ion-card>
           <ion-card-content>
-            <p><strong>Archivo:</strong> {{ selectedFileName() }}</p>
+            <ion-card-subtitle>
+              <p><strong>Archivo:</strong> {{ selectedFileName() }}</p>
+            </ion-card-subtitle>
 
             @if (previewUrl()) {
-              <div style="margin-top: 15px; text-align: center">
-                <img
-                  [src]="previewUrl()"
-                  alt="Vista previa"
-                  style="
-                    max-width: 100%;
-                    max-height: 250px;
-                    border-radius: 8px;
-                    object-fit: contain;
-                  "
-                />
-              </div>
+              <img [src]="previewUrl()" alt="Vista previa" />
             }
           </ion-card-content>
         </ion-card>

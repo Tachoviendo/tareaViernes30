@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { cloudUploadOutline, imageOutline } from 'ionicons/icons';
 import { Camera } from '@capacitor/camera';
@@ -11,12 +11,25 @@ import {
   IonCard,
   IonCardContent,
   IonSpinner,
+  IonCardSubtitle,
 } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { NotificationService } from '../../services/notification.service';
+import { NOTIFICATION_TYPES } from '../../model/notifications';
 
 @Component({
-  imports: [IonGrid, IonRow, IonCol, IonButton, IonIcon, IonCard, IonCardContent, IonSpinner],
+  imports: [
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonButton,
+    IonIcon,
+    IonCard,
+    IonCardContent,
+    IonSpinner,
+    IonCardSubtitle,
+  ],
   selector: 'app-foto',
   styleUrl: './foto.page.css',
   templateUrl: './foto.page.html',
@@ -24,11 +37,20 @@ import { firstValueFrom } from 'rxjs';
 export class FotoPage {
   // Inyección de dependencias moderna sin constructor
   private http = inject(HttpClient);
+  private notificationService = inject(NotificationService);
 
   // Signals para el estado
   fileToUpload = signal<File | null>(null);
-  selectedFileName = signal<string>('');
-  previewUrl = signal<string | null>(null);
+  selectedFileName = computed(() => {
+    const file: File | null = this.fileToUpload();
+    if (!file) return null;
+    return file.name;
+  });
+  previewUrl = computed(() => {
+    const file: File | null = this.fileToUpload();
+    if (!file) return null;
+    return URL.createObjectURL(file);
+  });
   isUploading = signal<boolean>(false);
 
   constructor() {
@@ -52,10 +74,14 @@ export class FotoPage {
         ),
       );
       this.isUploading.set(false);
+      this.notificationService.addNotification(
+        NOTIFICATION_TYPES.OK,
+        'Se subió la imagen.' + file.name + ' y se guardó como ' + res.filename,
+      );
       this.resetForm();
-      console.info('Imagen subida con éxito', { res });
     } catch (err: any) {
       console.error('Error al subir la imagen:', err);
+      this.notificationService.addErrorFromError(err);
     } finally {
       this.isUploading.set(false);
     }
@@ -63,8 +89,6 @@ export class FotoPage {
 
   resetForm() {
     this.fileToUpload.set(null);
-    this.selectedFileName.set('');
-    this.previewUrl.set(null);
   }
 
   public async takePhoto() {
@@ -74,7 +98,6 @@ export class FotoPage {
         includeMetadata: true,
       });
       // result.webPath can be set directly as the src of an image element
-      this.previewUrl.set(result.webPath ?? null);
 
       // On native: pass result.uri to the Filesystem API to get the full-resolution base64,
       // or use result.thumbnail for a lower-resolution base64 preview.
@@ -93,21 +116,22 @@ export class FotoPage {
       const extension = result.metadata.format || 'jpeg';
       const fileName = `photo_${Date.now()}.${extension}`;
 
+      console.log({ fileName, extension });
+
       const file = new File([blob], fileName, { type: `image/${extension}` });
 
-      // 3. Guardarlo en tu Signal para el FormData
       this.fileToUpload.set(file);
-
-      console.log('Archivo listo para subir:', file);
-
-      console.log('Format:', result.metadata?.format);
-      console.log('Resolution:', result.metadata?.resolution);
     } catch (e) {
       const error = e as any;
       // error.code contains the structured error code (e.g. 'OS-PLUG-CAMR-0003')
       // when thrown by the native layer. See the Errors section for all codes.
       const message = error.code ? `[${error.code}] ${error.message}` : error.message;
       console.error('takePhoto failed:', message);
+      this.notificationService.addNotification(
+        NOTIFICATION_TYPES.ERROR,
+        `takePhoto failed: ${message}`,
+      );
+      this.fileToUpload.set(null);
     }
   }
 }

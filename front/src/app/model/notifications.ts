@@ -1,7 +1,8 @@
 export enum NOTIFICATION_TYPES {
-  ERROR = 'error',
+  ERROR = 'danger',
   WARNING = 'warning',
-  INFO = 'info',
+  INFO = 'light',
+  OK = 'success',
 }
 
 export type Notification = {

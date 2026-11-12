@@ -17,6 +17,8 @@ import {
   IonMenuToggle,
   IonItem,
   IonIcon,
+  IonToast,
+  IonButton,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
@@ -26,6 +28,7 @@ import {
   checkboxOutline,
   imageOutline,
 } from 'ionicons/icons';
+import { NotificationService } from './services/notification.service';
 
 @Component({
   imports: [
@@ -46,6 +49,8 @@ import {
     IonMenuToggle,
     IonItem,
     IonIcon,
+    IonToast,
+    IonButton,
   ],
   selector: 'app-root',
   styleUrl: './app.css',
@@ -54,6 +59,7 @@ import {
 export class App {
   //NADA POR AQUI TODAVÍA
   public authService = inject(AuthService);
+  public notificationService = inject(NotificationService);
 
   constructor() {
     addIcons({ logOutOutline, imageOutline, homeOutline, peopleOutline, checkboxOutline });
