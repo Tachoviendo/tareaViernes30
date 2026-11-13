@@ -80,7 +80,7 @@ export class HomePage {
     try {
       const res = await firstValueFrom(
         this.http.post<{ message: string; filename: string; url: string }>(
-          'http://10.4.201.58:3001/images',
+          'http://10.4.200.117:3001/images',
           formData,
         ),
       );

@@ -50,6 +50,15 @@ export default async function (fastify, opts) {
       console.log({ destinationPath });
       await pipeline(data.file, fs.createWriteStream(destinationPath));
 
+      // Si el archivo superó el límite fileSize, multipart lo corta sin avisar:
+      // borramos el pedazo guardado y devolvemos error en vez de una imagen cortada.
+      if (data.file.truncated) {
+        await fs.promises.unlink(destinationPath);
+        return reply
+          .code(413)
+          .send({ error: "La imagen es demasiado grande (máximo 20 MB)." });
+      }
+
       // be careful of permission issues on disk and not overwrite
       // sensitive files that could cause security risks
 

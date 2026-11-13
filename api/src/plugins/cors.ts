@@ -8,7 +8,7 @@ export default fp<FastifyCorsOptions>(async (fastify) => {
     origin: [
         "http://localhost:4200", 
         "http://misitio.com",
-        "http://10.4.201.58:4200",
+        "http://10.4.200.117:4200",
         "http://localhost",
         "capacitor://localhost"],
     methods: "*",
