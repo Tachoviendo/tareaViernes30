@@ -1,0 +1,60 @@
+name: iOS build (.ipa sin firmar)
+
+on:
+  workflow_dispatch: # se corre a mano desde la pestaña Actions
+  push:
+    paths:
+      - "front/**"
+      - ".github/workflows/ios.yml"
+
+jobs:
+  ios:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: front
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Configuración "development" = usa la apiUrl de environment.development.ts
+      # (la de producción apunta a misitio.com).
+      - name: Build Angular
+        run: npx ng build --configuration development
+
+      - name: Copiar la web al proyecto iOS
+        run: npx cap sync ios
+
+      - name: Compilar (sin firma)
+        run: |
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Empaquetar .ipa
+        run: |
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -qr App-unsigned.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: front/App-unsigned.ipa

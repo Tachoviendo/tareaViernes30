@@ -69,7 +69,7 @@ export class FotoPage {
     try {
       const res = await firstValueFrom(
         this.http.post<{ message: string; filename: string; url: string }>(
-          'http://localhost:3000/images',
+          'http://10.4.201.58:3001/images',
           formData,
         ),
       );
